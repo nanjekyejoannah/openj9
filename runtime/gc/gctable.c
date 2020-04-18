@@ -55,6 +55,8 @@ J9MemoryManagerFunctions MemoryManagerFunctions = {
 	gcStartupHeapManagement,
 	gcShutdownHeapManagement,
 	j9gc_jvmPhaseChange,
+	gc_traverse_and_buffer_reachable_objects_do,
+	gc_traverse_and_and_buffer_reachable_from_object_do,
 	initializeMutatorModelJava,
 	cleanupMutatorModelJava,
 #if defined(J9VM_GC_FINALIZATION)
