@@ -20,9 +20,13 @@ public class OpenJ9SkyWay_Test {
 	public void testGCOpenJ9SkyWay(){
 		logger.info("Starting OpenJ9SkyWay_Test...");
 		logger.debug("Creating a buffer of Heap state...");
+		long startTime = System.nanoTime();
+		methodToTime();
 		outBuf = VM.outPutBuffer(NULL);
+		long endTime = System.nanoTime();
 		logger.debug("Finished creating the ouptut buffer...");
 		logger.debug("Test passed");
+		long duration = (endTime - startTime);
 	}
 
 }
