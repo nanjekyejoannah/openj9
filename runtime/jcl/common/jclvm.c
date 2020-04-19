@@ -59,6 +59,17 @@ typedef struct J9HeapStatisticsTableEntry {
 	UDATA aggregateSize;
 } J9HeapStatisticsTableEntry;
 
+typedef struct OutBuffer OutBuffer;
+
+struct OutBuffer {
+	UDATA size;
+	UDATA cursor;
+	BOOLEAN bufEmpty;
+	J9Object * _bufOnStack;
+	J9Object * buffer;
+	J9PortLibrary* portLib;
+};
+
 static UDATA hasConstructor(J9VMThread *vmThread, J9StackWalkState *state);
 static jvmtiIterationControl collectInstances(J9JavaVM *vm, J9MM_IterateObjectDescriptor *objDesc, void *state);
 static int hasActiveConstructor(J9VMThread *vmThread, J9Class *clazz);
@@ -82,7 +93,7 @@ Java_com_ibm_oti_vm_VM_localGC(JNIEnv *env, jclass clazz)
 	vmFuncs->internalExitVMToJNI(currentThread);
 }
 
-OutBuffer JNICALL
+OutBuffer* JNICALL
 Java_com_ibm_oti_vm_VM_outPutBuffer(jvmtiEnv* env, jint heap_filter, jclass klass, jobject initial_object, const jvmtiHeapCallbacks* callbacks,
 		      const void* user_data)
 {

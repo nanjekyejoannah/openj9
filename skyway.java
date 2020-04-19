@@ -8,9 +8,12 @@ public class skyway{
 	public static void main(String[] args)
 	{
 		long startTime = System.nanoTime();
-		outBuf = VM.outPutBuffer(NULL);
-		long endTime = System.nanoTime();
-		long duration = (endTime - startTime);
-		System.out.println(duration);
+		try{
+			outBuf = VM.outPutBuffer(NULL);
+		}catch(ArithmeticException e){System.out.println(e);}
+   			long endTime = System.nanoTime();
+			long duration = (endTime - startTime);
+			System.out.println(duration);
+
 	}
 }

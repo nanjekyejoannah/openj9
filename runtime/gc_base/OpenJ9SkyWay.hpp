@@ -142,7 +142,6 @@ private:
 	MMINLINE void setMarked(J9Object * object)
 	{
 		if (isHeapObject(object)) {
-			/* mark one bit only (next one has to be 0) - set 10 */
 			_markMap->setBit(object);
 		}
 	}
@@ -151,7 +150,6 @@ private:
 	{
 		if (isHeapObject(object)) {
 			UDATA referenceSize = _env->compressObjectReferences() ? sizeof(uint32_t) : sizeof(uintptr_t);
-			/* set both mark bits - set 11 */
 			_markMap->setBit(object);
 			_markMap->setBit((J9Object *)((UDATA)object + referenceSize));
 		}
@@ -161,7 +159,6 @@ private:
 	{
 		if (isHeapObject(object)) {
 			UDATA referenceSize = _env->compressObjectReferences() ? sizeof(uint32_t) : sizeof(uintptr_t);
-			/* check both bits in mark map - return true if 11 */
 			return (_markMap->isBitSet(object) && _markMap->isBitSet((J9Object *)((UDATA)object + referenceSize)));
 		} else {
 			return false;
@@ -172,7 +169,6 @@ private:
 	{
 		if (isHeapObject(object)) {
 			UDATA referenceSize = _env->compressObjectReferences() ? sizeof(uint32_t) : sizeof(uintptr_t);
-			/* clear both mark bits - set 00 */
 			_markMap->clearBit(object);
 			_markMap->clearBit((J9Object *)((UDATA)object + referenceSize));
 		}
@@ -181,14 +177,18 @@ private:
 protected:
 
 public:
+
+	typedef struct OutBuffer OutBuffer;
+
 	struct OutBuffer {
 		UDATA size;
 		UDATA cursor;
 		BOOLEAN bufEmpty;
-		J9Object* _bufOnStack;
-		U_8 * buffer;
+		J9Object * _bufOnStack;
+		J9Object * buffer;
 		J9PortLibrary* portLib;
 	};
+
 	MM_OpenJ9SkyWay(MM_EnvironmentBase *env, UDATA queueSlots, J9MODRON_REFERENCE_CHAIN_WALKER_CALLBACK *userCallback, void *userData) :
 		MM_RootScanner(env, true),
 		_queue(NULL),
@@ -200,7 +200,7 @@ public:
 		_hasOverflowed(false),
 		_isProcessingOverflow(false),
 		_isTerminating(false),
-		_shouldPreindexInterfaceFields(true),	/* default to behaviour required for Java6/heap11 */
+		_shouldPreindexInterfaceFields(true),
 		_markMap(NULL),
 		_heap(NULL),
 		_heapBase(NULL),
@@ -209,30 +209,26 @@ public:
 		_typeId = __FUNCTION__;
 #if defined(J9VM_GC_DYNAMIC_CLASS_UNLOADING)
 		setClassDataAsRoots(false);
-#endif /* J9VM_GC_DYNAMIC_CLASS_UNLOADING */
+#endif
 	};
 
 	bool initialize(MM_EnvironmentBase *env);
 	void tearDown(MM_EnvironmentBase *env);
 
-	struct OutBuffer
+	OutBuffer*
 	scanAndBufferReachableObjects(MM_EnvironmentBase *env, J9Object *objectPtr) {
 		scanAllSlots(env);
 		return outPutBuffer(objectPtr);
 	}
 
-	struct OutBuffer
+	OutBuffer*
 	scanAndBufferReachableFromObject(MM_EnvironmentBase *env, J9Object *objectPtr) {
 		pushObject(objectPtr);
 		return outPutBuffer(objectPtr);
 	}
 
-	/**
-	 * Added to support bi-modal interface indexing in JVMTI (CMVC 142897).
-	 * Detail:  heap10 requires no pre-indexing in order to preserve Java5 behaviour but heap11 requires pre-indexing to pass a Java6 JCK
-	 */
 	void setPreindexInterfaceFields(bool shouldPreindexInterfaceFields) { _shouldPreindexInterfaceFields =  shouldPreindexInterfaceFields; }
 };
 
-#endif /* REFERENCECHAINWALKER_HPP_ */
+#endif
 

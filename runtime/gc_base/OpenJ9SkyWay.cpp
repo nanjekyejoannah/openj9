@@ -36,7 +36,7 @@ class MM_UnfinalizedObjectList;
 
 extern "C" {
 
-struct OutBuffer
+OutBuffer*
 gc_traverse_and_buffer_reachable_objects_do(
 	J9VMThread *vmThread,
 	J9MODRON_REFERENCE_CHAIN_WALKER_CALLBACK userCallback,
@@ -45,7 +45,7 @@ gc_traverse_and_buffer_reachable_objects_do(
 {
 	MM_EnvironmentBase *env = MM_EnvironmentBase::getEnvironment(vmThread->omrVMThread);
 	vmThread->javaVM->memoryManagerFunctions->j9gc_flush_caches_for_walk(vmThread->javaVM);
-	struct OutBuffer buf = NULL;
+	OutBuffer* buf = NULL;
 
 	MM_OpenJ9SkyWay openj9skyway(env, TEMP_RCW_STACK_SIZE, userCallback, userData);
 	if (openj9skyway.initialize(env)) {
@@ -62,7 +62,7 @@ gc_traverse_and_buffer_reachable_objects_do(
 }
 
 
-struct OutBuffer
+OutBuffer*
 gc_traverse_and_and_buffer_reachable_from_object_do(
 	J9VMThread *vmThread,
 	J9Object *objectPtr,
@@ -72,7 +72,7 @@ gc_traverse_and_and_buffer_reachable_from_object_do(
 {
 	MM_EnvironmentBase *env = MM_EnvironmentBase::getEnvironment(vmThread->omrVMThread);
 	vmThread->javaVM->memoryManagerFunctions->j9gc_flush_caches_for_walk(vmThread->javaVM);
-	struct OutBuffer buf = NULL;
+	OutBuffer* buf = NULL;
 
 	MM_ReferenceChainWalker openj9skyway(env, TEMP_RCW_STACK_SIZE, userCallback, userData);
 	if (openj9skyway.initialize(env)) {
@@ -280,11 +280,11 @@ MM_OpenJ9SkyWay::popObject()
 }
 
 
-struct OutBuffer
+OutBuffer*
 MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 {
 	J9Object *obj = NULL;
-	struct OutBuffer buf;
+	OutBuffer* buf;
 
 	if (objectPtr == NULL) {
 		while (NULL != (objectPtr = popObject())) {
@@ -304,11 +304,11 @@ MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 	return buf;
 }
 
-struct OutBuffer
+OutBuffer*
 MM_OpenJ9SkyWay::buffer_obj(J9Object *objectPtr)
 {
 	U_8 *objectBuffer = NULL;
-	struct OutBuffer buf = NULL;
+	OutBuffer* buf = NULL;
 
 
 	objectBuffer = j9mem_allocate_memory(sizeof(J9Object), J9MEM_CATEGORY_CLASSES);
