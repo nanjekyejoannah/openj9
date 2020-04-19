@@ -444,7 +444,7 @@ public static native void globalGC();
  * This method will traverse all live objects given a pointer.
  * If you want GC to start from the heap roots, use NULL.
  */
-public static native void outPutBuffer(OutBuffer objectPtr);
+public static native void outPutBuffer(Object objectPtr);
 
 /**
  * Answer if native implementations should be used.

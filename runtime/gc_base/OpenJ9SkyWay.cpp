@@ -293,7 +293,7 @@ MM_OpenJ9SkyWay::popObject()
 OutBuffer *
 MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 {
-	J9Object *objectPtr, *obj = NULL;
+	J9Object *obj = NULL;
 	OutBuffer* buf;
 
 	if (objectPtr == NULL) {
@@ -305,7 +305,7 @@ MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 
 		}
 	} else {
-		scanObject(objectPtr);
+		obj = scanObject(objectPtr);
 		if (NULL != obj) {
 			buf = buffer_obj(objectPtr);
 		}
