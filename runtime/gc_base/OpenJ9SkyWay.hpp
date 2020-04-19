@@ -181,6 +181,14 @@ private:
 protected:
 
 public:
+	struct OutBuffer {
+		UDATA size;
+		UDATA cursor;
+		BOOLEAN bufEmpty;
+		J9Object* _bufOnStack;
+		U_8 * buffer;
+		J9PortLibrary* portLib;
+	};
 	MM_OpenJ9SkyWay(MM_EnvironmentBase *env, UDATA queueSlots, J9MODRON_REFERENCE_CHAIN_WALKER_CALLBACK *userCallback, void *userData) :
 		MM_RootScanner(env, true),
 		_queue(NULL),
@@ -207,13 +215,13 @@ public:
 	bool initialize(MM_EnvironmentBase *env);
 	void tearDown(MM_EnvironmentBase *env);
 
-	OutBuffer *
+	struct OutBuffer
 	scanAndBufferReachableObjects(MM_EnvironmentBase *env, J9Object *objectPtr) {
 		scanAllSlots(env);
 		return outPutBuffer(objectPtr);
 	}
 
-	OutBuffer *
+	struct OutBuffer
 	scanAndBufferReachableFromObject(MM_EnvironmentBase *env, J9Object *objectPtr) {
 		pushObject(objectPtr);
 		return outPutBuffer(objectPtr);

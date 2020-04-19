@@ -2,7 +2,7 @@
 // of a Java object
 import java.io.*;
 
-class Emp implements Serializable {
+class ser implements Serializable {
 private static final long serialversionUID =
 								129348938L;
 	transient int a;
@@ -11,7 +11,7 @@ private static final long serialversionUID =
 	int age;
 
 	// Default constructor
-public Emp(String name, int age, int a, int b)
+public ser(String name, int age, int a, int b)
 	{
 		this.name = name;
 		this.age = age;
@@ -22,7 +22,7 @@ public Emp(String name, int age, int a, int b)
 }
 
 public class SerialExample {
-public static void printdata(Emp object1)
+public static void printdata(ser object1)
 	{
 
 		System.out.println("name = " + object1.name);
@@ -33,7 +33,7 @@ public static void printdata(Emp object1)
 
 public static void main(String[] args)
 	{
-		Emp object = new Emp("ab", 20, 2, 1000);
+		ser object = new ser("ab", 20, 2, 1000);
 		String filename = "shubham.txt";
 
 		// Serialization
@@ -46,7 +46,6 @@ public static void main(String[] args)
 										(file);
 
 			long startTime = System.nanoTime();
-		    methodToTime();
 			// Method for serialization of object
 			out.writeObject(object);
 			long endTime = System.nanoTime();

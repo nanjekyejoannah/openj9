@@ -1,5 +1,3 @@
-#include "OpenJ9SkyWay.hpp"
-
 #include "j9cfg.h"
 #include "j9consts.h"
 #include "omrgcconsts.h"
@@ -22,6 +20,7 @@
 #include "PointerArrayIterator.hpp"
 #include "SlotObject.hpp"
 #include "VMThreadIterator.hpp"
+#include "OpenJ9SkyWay.hpp"
 
 class GC_HashTableIterator;
 class GC_JVMTIObjectTagTableIterator;
@@ -35,18 +34,9 @@ class MM_UnfinalizedObjectList;
 
 #define BUFFER_SIZE_1K  1024
 
-struct OutBuffer {
-	UDATA size;
-	UDATA cursor;
-	BOOLEAN bufEmpty;
-	J9Object* _bufOnStack;
-	U_8 * buffer;
-	J9PortLibrary* portLib;
-};
-
 extern "C" {
 
-OutBuffer *
+struct OutBuffer
 gc_traverse_and_buffer_reachable_objects_do(
 	J9VMThread *vmThread,
 	J9MODRON_REFERENCE_CHAIN_WALKER_CALLBACK userCallback,
@@ -55,7 +45,7 @@ gc_traverse_and_buffer_reachable_objects_do(
 {
 	MM_EnvironmentBase *env = MM_EnvironmentBase::getEnvironment(vmThread->omrVMThread);
 	vmThread->javaVM->memoryManagerFunctions->j9gc_flush_caches_for_walk(vmThread->javaVM);
-	OutBuffer *buf = NULL;
+	struct OutBuffer buf = NULL;
 
 	MM_OpenJ9SkyWay openj9skyway(env, TEMP_RCW_STACK_SIZE, userCallback, userData);
 	if (openj9skyway.initialize(env)) {
@@ -72,7 +62,7 @@ gc_traverse_and_buffer_reachable_objects_do(
 }
 
 
-OutBuffer *
+struct OutBuffer
 gc_traverse_and_and_buffer_reachable_from_object_do(
 	J9VMThread *vmThread,
 	J9Object *objectPtr,
@@ -82,7 +72,7 @@ gc_traverse_and_and_buffer_reachable_from_object_do(
 {
 	MM_EnvironmentBase *env = MM_EnvironmentBase::getEnvironment(vmThread->omrVMThread);
 	vmThread->javaVM->memoryManagerFunctions->j9gc_flush_caches_for_walk(vmThread->javaVM);
-	OutBuffer *buf = NULL;
+	struct OutBuffer buf = NULL;
 
 	MM_ReferenceChainWalker openj9skyway(env, TEMP_RCW_STACK_SIZE, userCallback, userData);
 	if (openj9skyway.initialize(env)) {
@@ -290,11 +280,11 @@ MM_OpenJ9SkyWay::popObject()
 }
 
 
-OutBuffer *
+struct OutBuffer
 MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 {
 	J9Object *obj = NULL;
-	OutBuffer* buf;
+	struct OutBuffer buf;
 
 	if (objectPtr == NULL) {
 		while (NULL != (objectPtr = popObject())) {
@@ -314,11 +304,11 @@ MM_OpenJ9SkyWay::outPutBuffer(J9Object *objectPtr;)
 	return buf;
 }
 
-OutBuffer *
+struct OutBuffer
 MM_OpenJ9SkyWay::buffer_obj(J9Object *objectPtr)
 {
 	U_8 *objectBuffer = NULL;
-	OutBuffer *buf = NULL;
+	struct OutBuffer buf = NULL;
 
 
 	objectBuffer = j9mem_allocate_memory(sizeof(J9Object), J9MEM_CATEGORY_CLASSES);
