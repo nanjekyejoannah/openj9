@@ -1,5 +1,3 @@
-// Java code for serialization and deserialization
-// of a Java object
 import java.io.*;
 
 class ser implements Serializable {
@@ -46,7 +44,6 @@ public static void main(String[] args)
 										(file);
 
 			long startTime = System.nanoTime();
-			// Method for serialization of object
 			out.writeObject(object);
 			long endTime = System.nanoTime();
 			long duration = (endTime - startTime);

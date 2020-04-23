@@ -354,7 +354,7 @@ MM_OpenJ9SkyWay::scanObject(J9Object *objectPtr)
 	case GC_ObjectModel::SCAN_PRIMITIVE_ARRAY_OBJECT:
 		break;
 	default:
-		// Non reachable object
+		// Non reachable objects
 		Assert_MM_unreachable();
 		objectPtr = NULL;
 	}
